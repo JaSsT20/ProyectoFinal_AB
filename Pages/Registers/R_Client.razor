@@ -1,0 +1,45 @@
+@page "/r_client"
+
+<EditForm Model="client">
+
+    <div class="card">
+    @* Cabeza *@
+        <div class="card-header">
+            <h1>Registro de clientes</h1>
+        </div>
+
+    @* Cuerpo del card *@
+        <div class="card-body">
+            @* Inicio de la fila *@
+            <div class="row">
+                @* Opcion izquierda *@
+                <div class="col-md-6">
+                    <label class="form-label">Nombre</label>
+                    <InputText @bind-Value="client.Name" class="form-control"></InputText>
+                </div>
+                @* Opcion derecha *@
+                <div class="col-md-6">
+                    <label class="form-label">Fecha</label>
+                    <InputDate @bind-Value="client.EntryDate" class="form-control"></InputDate>
+                </div>
+            </div>
+            @* Fin de la fila *@
+            <label>Email</label>
+            <InputText @bind-Value="client.Email" class="form-control"></InputText>
+            <label>Telefono</label>
+            <InputText @bind-Value="client.Telephone" class="form-control"></InputText>
+        </div>
+    @* Footer o pie *@
+        <div class="card-footer">
+            <button type="button" class="btn btn-primary"><span class="oi oi-plus"/> Nuevo</button>
+            <button type="button" class="btn btn-success"><span class="oi oi-"/> Guardar</button>
+            <button type="button" class="btn btn-danger"><span class="oi oi-delete"/> Eliminar</button>
+        </div>
+    </div>
+
+</EditForm>
+
+@code
+{
+    public Client client { get; set; } = new Client();
+}
