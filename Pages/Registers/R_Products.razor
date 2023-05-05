@@ -17,25 +17,24 @@
                     <label class="form-label">Precio</label>
                     <InputNumber @bind-Value="products.Price" class="form-control"></InputNumber>
                 </div>
-            <div class="row">
-                <div class="clo-md5">
+            
+                <div class="col-md-5">
                     <label>Marca</label>
                     <InputText @bind-Value="products.Brand" class="form-control"></InputText>
                 </div>
 
-                <div class="col-md5">
+                <div class="col-md-5">
                     <label>Fecha de entrada</label>
                     <InputDate @bind-Value="products.EntryDate"></InputDate>
                 </div>
-
-
             </div>
-            </div>
-
         </div>
 
         <div class="card-footer">
-
+            <button type="button" class="btn btn-primary"><span class="oi oi-plus"/>  Nuevo</button>
+            <button type="buttton" class="btn btn-success"><span class="oi oi-circle-check"/>  Guardar</button>
+            <button type="buttton" class="btn btn-danger"><span class="oi oi-delete"/>  Eliminar</button>
+            <button type="button" class="btn btn-secondary"><span class="oi oi-chevron-left"/>  Volver</button>
         </div>
 
 
@@ -46,7 +45,7 @@
 
 @code
 {
-    public Products products {get; set;} = new Products();
+    public Product products {get; set;} = new Product();
 
 }
 
