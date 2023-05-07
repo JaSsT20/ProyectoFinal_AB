@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 
-public class Sales
+public class Sale
 {
 [Key]
 public int SaleId { get; set; }
