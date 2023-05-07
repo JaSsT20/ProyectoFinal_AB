@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
-public class ProductsBLL
+public class ProductBLL
 {
     private Context _context;
-    public ProductsBLL(Context context)
+    public ProductBLL(Context context)
     {	
         _context = context;
     }
