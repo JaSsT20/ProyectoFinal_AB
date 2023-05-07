@@ -7,4 +7,5 @@ public class Context : DbContext
     }
     public DbSet<Client> Clients { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<Sale> Sales { get; set; }
 }
