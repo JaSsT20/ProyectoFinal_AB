@@ -1,8 +1,12 @@
+global using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+var ConStr = builder.Configuration.GetConnectionString("ConStr");
+builder.Services.AddDbContext<Context>(option => option.UseSqlite(ConStr));
 
 // Add services to the container.
 builder.Services.AddRazorPages();
