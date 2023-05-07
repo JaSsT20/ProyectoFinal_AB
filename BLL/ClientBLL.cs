@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 public class ClientBLL
 {
