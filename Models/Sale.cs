@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-
 public class Sale
 {
 [Key]
@@ -9,5 +8,4 @@ public int ClientId { get; set; }
 public int Quantity { get; set; }
 public DateTime SaleDate { get; set; }
 public float Total { get; set; }
-
 } 
