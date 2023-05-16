@@ -1,0 +1,37 @@
+@page "/r_venta"
+
+<EditForm Model="sale">
+    <div class="card">
+
+        <div class="card-header">
+            <h1>Registro ventas</h1>
+        </div>
+        @* BODY *@
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Id</label>
+                    <InputNumber @bind-Value="sale.SaleId" class="form-control"></InputNumber>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Fecha</label>
+                    <InputDate @bind-Value="sale.SaleDate" class="form-control"></InputDate>
+                </div>
+            </div>
+            <label class="form-label">Concepto</label>
+            <InputDate @bind-Value="sale.SaleDate" class="form-control"></InputDate>
+
+        </div>
+
+        <div class="card-footer">
+            <button type="button" class="btn btn-primary">Nuevo</button>
+            <button type="button" class="btn btn-success">Guardar</button>
+            <button type="button" class="btn btn-danger">Eliminar</button>
+        </div>
+    </div>
+</EditForm>
+
+@code
+{
+    public Sale sale { get; set; } = new Sale();
+}
