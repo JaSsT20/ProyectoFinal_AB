@@ -1,46 +1,249 @@
-@page "/r_venta"
+@page "/r_sales"
+@page "/r_sales/{saleId:int}"
+@inject SaleBLL SaleBLL
+@inject ProductBLL ProductBLL
+@inject ClientBLL ClientBLL
 
-<EditForm Model="sale">
-    <div class="card">
-
-        <div class="card-header">
-            <h1>Registro ventas</h1>
-        </div>
-        @* BODY *@
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <label class="form-label">Id</label>
-                    <InputNumber @bind-Value="sale.SaleId" class="form-control"></InputNumber>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">Fecha</label>
-                    <InputDate @bind-Value="sale.SaleDate" class="form-control"></InputDate>
-                </div>
+<EditForm Model="sale" OnValidSubmit="Save">
+    <DataAnnotationsValidator/>
+    <div class="container">
+        <div class="card">
+            @* Header card *@
+            <div class="card-header">
+                <h3>Registro de ventas</h3>
             </div>
-            <label class="form-label">ClienteId</label>
-            <InputNumber @bind-Value="sale.ClientId" class="form-control"></InputNumber>
-            <div class="row">
-                <div class="col-md-6">
-                    <label class="form-label">Cantidad</label>
-                    <InputNumber @bind-Value="sale.Quantity" class="form-control"></InputNumber>
+            @* BodyCard *@
+            <div class="card-body">
+                <div class='row'>
+                    <div class='col-md-6'>
+                        <label class="form-label">Venta Id</label>
+                        <div id="search-id">
+                            <InputNumber @bind-Value="sale.SaleId" class="form-control"></InputNumber>
+                            <button type="button" class="btn btn-info oi oi-magnifying-glass" @onclick="Search"></button>
+                        </div>
+                            <ValidationMessage For="@(() => sale.SaleId)" />
+                    </div>
+                    <div class='col-md-6'>
+                        <label>Fecha</label>
+                        <InputDate @bind-Value='sale.SaleDate' class='form-control'></InputDate>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label class="form-label">Total</label>
-                    <InputNumber @bind-Value="sale.Total" class="form-control"></InputNumber>
+                <div class="row">
+                    @* Cliente *@
+                    <div class="col-md-6">
+                        <label class="form-label">Cliente</label>
+                        <InputSelect @bind-Value="sale.ClientId" class="form-select">
+                            @foreach (var client in ClientList)
+                            {
+                                <option value="@client.ClientId">@client.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => sale.ClientId)" />
+                    </div>
                 </div>
+                @* DETALLE *@
+                <div class="card-header">
+                    <h3>Detalle</h3>
+                </div>
+                    <div class='row'>
+                        <div class='col-md-6'>              
+                            <label>Producto</label>
+                            <InputSelect @bind-Value='detail.ProductId' class='form-select'>
+                                @foreach (var product in ProductList)
+                                {
+                                    <option value="@product.ProductId">@product.Name (@product.Existence)</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class='col-md-6'>
+                            <label>Cantidad</label>
+                            <div class="input-group mb-3">
+                                <InputNumber @bind-Value='detail.Quantity' class='form-control'></InputNumber>
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="button"><span class="oi oi-plus" @onclick="AddDetail"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                                @(@product = SearchProduct(detail.ProductId))
+                                <label>Precio</label>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text">$</span>
+                                    <InputNumber @bind-Value='product.Price' class='form-control' readonly></InputNumber>
+                                    <span class="input-group-text">.00</span>
+                                </div>
+                        </div>
+                    </div>
+                    <table class='table table-sm'>
+                        <thead>
+                            <th>Id</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>SubTotal</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            @foreach(var det in sale.SalesDetails)
+                            {
+                                var prod = SearchProduct(det.ProductId);
+                                var SubTotal = @prod.Price * @det.Quantity;
+                                <tr>
+                                    <td>@det.ProductId</td>
+                                    <td>@prod.Name</td>
+                                    <td class="price">@prod.Price</td>
+                                    <td>@det.Quantity</td>
+                                    <td class="price">@SubTotal</td>
+                                    <td><button type="button" class="btn btn-danger oi oi-trash" @onclick=@(() => RemoveDetail(det))></button></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            @if(sale.SalesDetails.Sum(d=> d.AmountPaid) != 0)
+                            {
+                                <tr>
+                                    <td class="table-active">Total: </td>
+                                    <td class="price">$@sale.SalesDetails.Sum(d=> d.AmountPaid) </td>
+                                </tr>
+                            }
+                        </tfoot>
+                    </table>
+            </div> @*END BODY CARD*@
+            @* Footer card *@
+            <div class='card-footer'>
+                <button type='button' class='btn btn-primary'@onclick='New'><span class="oi oi-plus"/> Nuevo </button>
+                <button type='submit' class='btn btn-success'@onclick="Save"><span class="oi oi-check"/> Guardar </button>
+                <button type='button' class='btn btn-danger'@onclick='Delete'><span class="oi oi-delete"/> Eliminar </button>
             </div>
-        </div>
-
-        <div class="card-footer">
-            <button type="button" class="btn btn-primary">Nuevo</button>
-            <button type="button" class="btn btn-success">Guardar</button>
-            <button type="button" class="btn btn-danger">Eliminar</button>
         </div>
     </div>
 </EditForm>
 
 @code
 {
-    public Sale sale { get; set; } = new Sale();
+    [Parameter]
+    public int saleId { get; set; }
+    private Sale sale { get; set; } = new Sale();
+    public SaleDetail detail { get; set; } = new SaleDetail();
+    public List<Product> ProductList { get; set; } = new List<Product>();
+    public List<Client> ClientList { get; set; } = new List<Client>();
+    public Product product { get; set; } = new Product();
+    protected override void OnInitialized()
+    {
+        if(saleId > 0)
+        {
+            sale.SaleId = saleId;
+            Search();
+        }
+        ProductList = ProductBLL.GetList(pr => true);
+        ClientList = ClientBLL.GetList(cl => true);
+    }
+    void Search()
+    {
+        var saleFound = SaleBLL.Search(sale.SaleId);
+        if(saleFound != null && saleFound.SaleId > 0)
+        {
+            sale = saleFound;
+        }
+        else
+        {
+            if(sale.SaleId <= 0)
+            {
+                return;
+            }
+        } 
+    }
+    void Save()
+    {
+        if(!Validate())
+        {
+            return;
+        }
+        if(SaleBLL.Save(sale))
+        {
+            New();
+        }
+        else
+        {
+        }
+    }
+    void New()
+    {
+        sale = new Sale();
+        detail = new SaleDetail();
+    }
+    void Delete()
+    {
+        if(SaleBLL.Delete(sale))
+        {
+            New();
+        }
+    }
+    bool Validate()
+    {
+        if(sale.SaleId < 0)
+        {
+            return false;
+        }
+        if(sale.ClientId <= 0)
+        {
+            return false;
+        }
+        if(detail.ProductId <= 0 && sale.SalesDetails.Count <= 0)
+        {
+            return false;
+        }
+        if(sale.SalesDetails.Count <= 0)
+        {
+            return false;
+        }
+        else
+            return true;
+    }
+    private Product SearchProduct(int productId)
+    {
+        Product prod = new Product();
+        var prodFound = ProductBLL.Search(productId);
+        if(prodFound != null)
+            return prod = prodFound;
+        return new Product();
+    }
+    @* Detail functions *@
+    void AddDetail()
+    {
+        if(detail.ProductId <= 0)
+        {
+            return;
+        }
+        if(detail.Quantity <= 0){
+                return;
+        }
+        var product = ProductBLL.Search(detail.ProductId);
+        if(product != null && product.Existence < detail.Quantity)
+        {
+                return;
+        }
+        if(product != null)
+        {
+            detail.ProductId = product.ProductId;
+            detail.AmountPaid = product.Price;
+            detail.AmountPaid = detail.Quantity * product.Price; 
+            sale.SalesDetails.Add(detail);
+            detail = new SaleDetail();
+        }
+    }
+    void RemoveDetail(SaleDetail det)
+    {
+        var detFound = sale.SalesDetails.Find(d => d.Id == det.Id);
+        if(detFound != null)
+        {
+            var prod = SearchProduct(detFound.ProductId);
+            if(prod != null)
+            {
+                prod.Existence += detFound.Quantity;
+            }
+            det = detFound;
+            sale.SalesDetails.Remove(det); 
+        }
+    }
 }
