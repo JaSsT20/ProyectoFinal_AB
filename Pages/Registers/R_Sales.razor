@@ -18,9 +18,18 @@
                     <InputDate @bind-Value="sale.SaleDate" class="form-control"></InputDate>
                 </div>
             </div>
-            <label class="form-label">Concepto</label>
-            <InputDate @bind-Value="sale.SaleDate" class="form-control"></InputDate>
-
+            <label class="form-label">ClienteId</label>
+            <InputNumber @bind-Value="sale.ClientId" class="form-control"></InputNumber>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Cantidad</label>
+                    <InputNumber @bind-Value="sale.Quantity" class="form-control"></InputNumber>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Total</label>
+                    <InputNumber @bind-Value="sale.Total" class="form-control"></InputNumber>
+                </div>
+            </div>
         </div>
 
         <div class="card-footer">
