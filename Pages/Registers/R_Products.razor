@@ -1,4 +1,6 @@
 @page "/r_products"
+@inject ProductBLL ProductBLL
+
 
 <EditForm Model="products">
     <div class="card">
@@ -8,6 +10,10 @@
 
         <div class="card-body">
             <div class="row">
+                <label class="form-label">Id</label>
+                <div>
+                    <InputNumber @bind-Value="products.ProductId" class="form-control"></InputNumber>
+                </div>
                 <div class="col-md-5">
                     <label class="form-label">Nombre del producto</label>
                     <InputText @bind-Value="products.Name" class="form-control"></InputText>
@@ -31,10 +37,10 @@
         </div>
 
         <div class="card-footer">
-            <button type="button" class="btn btn-primary"><span class="oi oi-plus"/>  Nuevo</button>
-            <button type="buttton" class="btn btn-success"><span class="oi oi-circle-check"/>  Guardar</button>
-            <button type="buttton" class="btn btn-danger"><span class="oi oi-delete"/>  Eliminar</button>
-            <button type="button" class="btn btn-secondary"><span class="oi oi-chevron-left"/>  Volver</button>
+            <button type="button" class="btn btn-primary" @onclick="Clear"><span class="oi oi-plus"/>  Nuevo</button>
+            <button type="buttton" class="btn btn-success" @onclick="Save"><span class="oi oi-circle-check"/>  Guardar</button>
+            <button type="buttton" class="btn btn-danger" @onclick="Delete"><span class="oi oi-delete"/>  Eliminar</button>
+            <button type="butto" class="btn btn-dark" @onclick="Search"><span class="oi oi-magnifying-glass"/> Buscar</button>
         </div>
 
 
@@ -47,5 +53,30 @@
 {
     public Product products {get; set;} = new Product();
 
+
+    void Clear()
+    {
+        products = new Product();
+    }
+    void Save()
+    {
+        if (ProductBLL.Save(products))
+        Clear();
+    }
+    void Delete()
+    {
+        if(ProductBLL.Delete(products))
+        {
+            Clear();
+        }
+    }
+    void Search()
+    {
+        var productFound = ProductBLL.Search(products.ProductId);
+        if (productFound != null)
+            {
+                products = productFound;
+            }
+    }
 }
 
